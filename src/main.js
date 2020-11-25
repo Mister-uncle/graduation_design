@@ -3,6 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import ElementUI from 'element-ui' //element-ui的全部组件
+import 'element-ui/lib/theme-chalk/index.css'//element-ui的css
+import 'font-awesome/css/font-awesome.css'
+import animate from 'animate.css/animate.css'
+
+Vue.use(ElementUI) //使用elementUI
+Vue.use(animate)
 
 Vue.config.productionTip = false
 
