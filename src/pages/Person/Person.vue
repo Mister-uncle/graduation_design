@@ -14,8 +14,8 @@
         <div class="list">
           <span>个人中心</span>
           <ul>
-            <li>我的个人中心</li>
-            <li>收货地址</li>
+            <li @click="$router.push('/person/user')">我的个人中心</li>
+            <li @click="$router.push('/person/address')">收货地址</li>
             <li>消息通知</li>
             <li>购买资格</li>
             <li>现金账户</li>
@@ -27,7 +27,7 @@
         <div class="list">
           <span>账户管理</span>
           <ul>
-            <li>个人信息</li>
+            <li @click="$router.push('/person/info')">个人信息</li>
             <li>修改密码</li>
           </ul>
         </div>
@@ -72,9 +72,11 @@
     width: 80%;
     margin: 50px auto;
     /*height: 500px;*/
+    /*opacity: 0;*/
     /*background-color: orange;*/
     display: flex;
-    justify-content: left;
+    justify-content: space-between;
+    align-items: flex-start;
     .personNav{
       width: 20%;
       /*height: 300px;*/
@@ -82,6 +84,7 @@
       box-shadow:0 2px 12px 0 rgba(0,0,0,.1);
       padding: 40px;
       box-sizing: border-box;
+      max-height: 810px;
       .list{
         span{
           font-size: 16px;
@@ -102,11 +105,11 @@
       }
     }
     .personContent{
-      width:78%;
+      width:80%;
       padding: 40px;
       box-sizing: border-box;
       box-shadow:0 2px 12px 0 rgba(0,0,0,.1);
-
+      /*height: 100%;*/
     }
   }
 </style>

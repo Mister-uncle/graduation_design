@@ -19,11 +19,11 @@
             <div class="personDrop">
               <i class="fa fa-caret-up" aria-hidden="true"></i>
               <ul>
-                <li @click="$router.push('person')">个人中心</li>
-                <li @click="$router.push('person')">评价晒单</li>
-                <li @click="$router.push('person')">我的喜欢</li>
-                <li @click="$router.push('person')">我的账户</li>
-                <li @click="$router.push('person')">退出登录</li>
+                <li @click="$router.push('person/user')">个人中心</li>
+                <li @click="$router.push('person/user')">评价晒单</li>
+                <li @click="$router.push('person/user')">我的喜欢</li>
+                <li @click="$router.push('person/info')">我的账户</li>
+                <li @click="$router.push('login')">退出登录</li>
               </ul>
             </div>
           </div>

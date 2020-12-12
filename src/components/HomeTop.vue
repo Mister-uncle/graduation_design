@@ -46,7 +46,7 @@
               </a>
             </li>
             <li >
-              <a href="javascript:" id="tab_shopCar" @click="$router.push('cart')">
+              <a href="javascript:" id="tab_shopCar" @click="$router.push('/cart')">
                 <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                 购物车
               </a>

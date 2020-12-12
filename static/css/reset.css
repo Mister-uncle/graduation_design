@@ -72,7 +72,9 @@ a{
   content: ".";
   height: 0
 }
-
+input:focus{
+  border-color: #ac0825 ;
+}
 /*.clearfix {*/
 /*  *zoom: 1*/
 /*}*/

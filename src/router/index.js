@@ -15,8 +15,10 @@ import Cart from "../pages/Phone/Cart";
 import CheckOut from "../pages/Phone/CheckOut";
 import Confirm from "../pages/Phone/Confirm";
 import Person from "../pages/Person/Person";
-import OrderLsit from "../pages/Person/children/OrderList";
 import OrderList from "../pages/Person/children/OrderList";
+import User from "../pages/Person/children/User";
+import Info from "../pages/Person/children/Info";
+import Address from "../pages/Person/children/Address";
 
 
 Vue.use(Router)
@@ -46,9 +48,12 @@ export default new Router({
     { path: '/cart',name: 'Cart', component: Cart },
     { path: '/checkout',name: 'CheckOut', component: CheckOut },
     { path: '/confirm',name: 'Confirm', component: Confirm },
-    { path: '/person',name: 'Person', component: Person,
+    { path: '/person',name: 'Person',component: Person,redirect: '/person/orderlist',
       children:[
         { path: 'orderlist',name:'OrderList',component:OrderList },
+        { path: 'user',name:'User',component:User },
+        { path: 'info',name:'Info',component:Info },
+        { path: 'address',name:'Address',component:Address },
       ]
     },
 
