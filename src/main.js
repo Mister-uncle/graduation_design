@@ -11,6 +11,8 @@ import animate from 'animate.css/animate.css'
 Vue.use(ElementUI) //使用elementUI
 Vue.use(animate)
 
+
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
