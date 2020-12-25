@@ -29,14 +29,18 @@
           </label>
 
           <div class="re_main_regist_bot">
-            <input type="checkbox"  class="re_check">
+            <input type="checkbox"
+                   @click="buttonAllowed()"
+                   class="re_check">
             我已阅读并同意
             <a href="javascript:">《用户协议》</a>
             <a href="javascript:">《隐私条款》</a>
           </div>
 
           <a href="javascript:">
-            <div class="button">注册</div>
+            <div class="button"
+            :class="{current: buttonAllow}"
+            >注册</div>
           </a>
 
 
@@ -60,6 +64,16 @@
       components:{
         NavTitle,
         NavFoot
+      },
+      data(){
+          return{
+            buttonAllow:false,
+          }
+      },
+      methods:{
+        buttonAllowed(){
+          this.buttonAllow = !this.buttonAllow
+        }
       }
     }
 </script>
@@ -121,7 +135,11 @@
         font-weight: bolder;
         border: none;
         border-radius: 10px;
-
+        cursor: no-drop ;
+      }
+      .current{
+        background-color: rgba(0, 125, 255, 0.89);
+        cursor: pointer;
       }
       .re_main_regist_bot{
         text-align: left;

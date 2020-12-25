@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "animate.css": "^3.5.2",
+    "axios": "^0.21.0",
     "element-ui": "^2.14.1",
     "less-loader": "^4.1.0",
+    "nprogress": "^0.2.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

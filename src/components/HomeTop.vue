@@ -120,6 +120,7 @@ export default {
   }
   .tabBanner{
     width: 100%;
+    min-width: 1340px;
     background-color: #f5f5f5;
     position: sticky;
     top: 0;
@@ -127,6 +128,7 @@ export default {
   }
   .tab{
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     width: 96%;
     margin: 0 auto;

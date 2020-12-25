@@ -15,20 +15,92 @@
           <div class="loginCDC">
 
           </div>
+
+<!--          //密码登录-->
+
           <div class="loginCDR">
-            <div class="form">
-              <input type="text" placeholder="邮箱地址/手机号">
-              <input type="password" placeholder="密码">
-              <a href="javascript:">
+            <div
+              :class="{passwordLogined:passwordLoginShow}"
+              class="form passwordLogin" >
+              <input type="text" placeholder="请输入账号">
+              <input type="password" placeholder="请输入密码">
+              <div class="maskInput">
+                <input  type="text"
+                        v-model="svgCode"
+                        placeholder="请输入验证码">
+                <div>
+                  <img
+                    ref="captcha"
+                    @click.prevent="getCaptcha()"
+                    :src="getSvgCaptcha" alt="">
+                </div>
+              </div>
+              <a
+                @click.prevent="phoneLoginToggle"
+                href="javascript:">
                 短信验证码登录
               </a>
               <a href="javascript:">
-                <div class="button">登录</div>
+                <div class="button"
+                     @click.prevent="pwdLogin"
+                >登录</div>
               </a>
             </div>
+
+<!--邮箱登录-->
+
+            <div
+              :class="{phoneLogined:phoneLoginShow}"
+              class="form phoneLogin">
+              <label>
+                <input type="text"
+                       v-model="mail"
+                       placeholder="请输入邮箱地址">
+                <div :class="{
+                  phone_right:mailRight,
+                  current:!sendMaskAgain}"
+                  @click.prevent="sendMasked(true)"
+                >获取验证码</div>
+                <div class="reSend"
+                     :class="{current:sendMaskAgain}"
+                     v-if="countDown !== 0"
+                >重新发送（ {{countDown}} s）</div>
+                <div class="reSendAgain"
+                     :class="{current:reSendAgain}"
+                     v-else
+                     @click.prevent="sendMasked"
+                >重新发送</div>
+              </label>
+              <label >
+                <input
+                  type="password"
+                  v-model="mailCode"
+                  placeholder="请输入邮箱验证码">
+              </label>
+              <div class="maskInput">
+                <input  type="text"
+                        v-model="svgCode"
+                        placeholder="请输入验证码">
+                <div >
+                  <img
+                    ref="captcha"
+                    @click.prevent="getCaptcha()"
+                    :src="getSvgCaptcha" alt="">
+                </div>
+              </div>
+              <a
+                @click.prevent="passwordLoginToggle"
+                href="javascript:">
+                密码登录
+              </a>
+              <a href="javascript:">
+                <div class="button" @click.prevent="mailLogin">登录</div>
+              </a>
+            </div>
+
             <div class="formBot">
               <div>
-                <a href="javascript:" @click="swichTo('/register')">注册</a>
+                <a href="javascript:" @click.prevent="swichTo('/register')">注册</a>
                 <span>|</span>
                 <a href="javascript:">忘记密码</a>
                 <span>|</span>
@@ -48,7 +120,6 @@
           </div>
         </div>
       </div>
-
       <nav-foot></nav-foot>
     </div>
 </template>
@@ -62,20 +133,144 @@
       components:{
         NavTitle,
         NavFoot,
-
       },
       data(){
           return{
-
+            phoneLoginShow:false,
+            passwordLoginShow:false,
+            sendMaskAgain:true,//重新发送（59）s默认隐藏
+            reSendAgain:true,//重新发送默认隐藏
+            mail:'',
+            mailCode:'',
+            svgCode:'',
+            countDown:0,
+            passMask:'',
+            password:'',
+            getSvgCaptcha:''
           }
       },
       methods:{
+        // 路径跳转
         swichTo(path){
           this.$router.replace('register')
-        }
+        },
+        // 验证码
+        async sendMasked(flag){
+          if(this.mailRight && this.mail !== ''){
+            this.sendMaskAgain = !flag
+            this.countDown = 60
+            this.intervalId = setInterval(() => {
+              this.countDown --
+              if(this.countDown === 0){
+                clearInterval(this.intervalId)
+                this.reSendAgain = false
+              }
+            },1000);
 
+           const {data:res} = await this.$http.get('api/send_mail'+'?mail='+this.mail)
+            if(res.success_code === 200){
+              this.$notify.success({
+                title: '成功',
+                message: '邮箱发送成功！',
+                showClose: false
+              });
+            }else {
+              this.$notify.error({
+                title: '错误',
+                message: '邮箱发送失败！',
+                showClose: false
+              });
+              this.countDown = 0
+              clearInterval(this.intervalId)
+            }
+            console.log(res)
+          }else {
+            this.$message({
+              showClose: true,
+              message: '请输入正确的邮箱地址！',
+              type: 'error'
+            });
+          }
+        },
+        phoneLoginToggle(){
+          this.phoneLoginShow = true
+          this.passwordLoginShow = true
+        },
+        passwordLoginToggle(){
+          this.phoneLoginShow = false
+          this.passwordLoginShow = false
+        },
+// 获取验证码
+        async getCaptcha(){
+          this.getSvgCaptcha = 'http://localhost:3000/api/captcha?time=' + new Date();
+
+          // const {data:res} = await this.$http.get('http://localhost:3000/api/captcha?time=' + new Date())
+          // console.log(res)
+        },
+
+        //邮箱验证码登录
+        async mailLogin(){
+          console.log(this.mail)
+          console.log(this.mailCode)
+          console.log(this.svgCode)
+          const {data:res} = await this.$http.post('api/login_mail',{
+            mail:this.mail,
+            code:this.mailCode,
+            svgCode:this.svgCode
+          })
+
+          console.log(res)
+
+        },
+        //账号密码登录
+        pwdLogin(){
+
+        },
+// 邮箱验证
+        mailRight(){
+          let reg = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})*$/
+          if(reg.test(this.mail)){
+            return true
+          } else {
+            this.$message({
+              showClose: true,
+              message: '请输入正确的邮箱地址！',
+              type: 'error'
+            });
+            return false
+          }
+        },
+        // 验证码验证
+        svgRight(){
+          if(this.svgCode === ''){
+            this.$message({
+              showClose: true,
+              message: '请输入正确的验证码！',
+              type: 'error'
+            });
+            this.getCaptcha()
+            return false;
+          }
+          return true
+
+        },
+        // 邮箱验证码验证
+        mailCodeRight(){
+          // console.log(this.mailCode.length)
+          if(this.mailCode === '' ){
+            this.$message({
+              showClose: true,
+              message: '请输入正确的邮箱验证码！',
+              type: 'error'
+            });
+            return false;
+          }
+          return true
+
+        }
       },
       created() {
+        this.getCaptcha()
       },
       mounted() {
 
@@ -123,7 +318,61 @@
         text-align: center;
         padding: 0 40px;
         margin-right: 0;
+        position: relative;
+        .passwordLogin{
+          /*display: none;*/
+          opacity: 1;
+          transition: all ease-in-out .5s;
+        }
+        .passwordLogined{
+          opacity: 0;
+        }
+        .phoneLogin{
+          position: absolute;
+          opacity: 0;
+          /*display: none;*/
+          /*left: 0;*/
+          transition: left ease-in-out .3s;
+        }
+        .phoneLogined{
+          left: 0;
+          opacity: 1;
+          /*display: block;*/
+          padding: 0 40px ;
+
+        }
+        .current{
+          display: none;
+        }
+        .phoneLogin{
+          label:first-of-type{
+            position: relative;
+            div{
+              position: absolute;
+              top: 15px;
+              right: -180px;
+              color: rgba(0, 125, 255, 0.45);
+              /*border: 1px solid #757575;*/
+            }
+            .reSend{
+              color: rgba(0, 125, 255, 0.47);
+              cursor: default;
+            }
+            .reSendAgain{
+              color: rgba(0, 125, 255, 0.91);
+              cursor: pointer;
+            }
+            .phone_right{
+              color: rgba(0, 125, 255, 0.93);
+              cursor: pointer;
+            }
+            .current{
+              display: none;
+            }
+          }
+        }
         .form{
+          display: inline-block;
           input{
             display: block;
             margin-bottom: 30px;
@@ -134,6 +383,22 @@
             border: none;
             padding: 0 15px;
             font-size: 16px;
+          }
+          .maskInput{
+            position: relative;
+            input{
+              width: 175px;
+            }
+            div{
+              position: absolute;
+              top: 0;
+              right: 0;
+              /*background-color: pink;*/
+              width: 160px;
+              height: 50px;
+              border-radius: 10px;
+              cursor: pointer;
+            }
           }
           a{
             display: block;
